@@ -11,7 +11,7 @@ class AudioDataSet(Dataset):
         return len(self.figs)
 
     def subType_to_vector(self, value):
-        data = {25: 0, 26: 1}
+        data = {21: 0, 24: 1, 27: 2, 28: 3}
         return data.get(value, None)
 
     def __getitem__(self, idx):

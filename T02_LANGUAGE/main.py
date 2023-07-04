@@ -15,8 +15,7 @@ from helper.FeatureHelper import FeatureHelper
 from helper.IOHelper import IOHelper
 from sklearn.model_selection import train_test_split
 
-from models.BrainModel import BrainModel
-from models.FeatureModel import FeatureModel
+from models.LanguageModel import LanguageModel
 from torchsummary import summary
 from skimage.io import imread
 from skimage.transform import resize
@@ -31,7 +30,7 @@ def convert_model_to_mobile():
     example = example.to(device)
     traced_script_module = torch.jit.trace(model, example)
     optimized_traced_model = optimize_for_mobile(traced_script_module)
-    optimized_traced_model.save('./outputs/T01_mobile.pt')
+    optimized_traced_model.save('./outputs/T02_mobile.pt')
 
     print('optimize for mobile and model save completed.')
 
@@ -50,12 +49,14 @@ if __name__ == '__main__':
 
     seed_everything()
 
-    SOURCE_PATH = r'C:\Users\USER\Desktop\2023\DysarthriaChecker\Model\DATA\TRAINING\ORIGINAL\TS01_BRAIN'
-    LABEL_PATH = r'C:\Users\USER\Desktop\2023\DysarthriaChecker\Model\DATA\TRAINING\LABELED\TL01_BRAIN'
+    SOURCE_PATH = r'C:\Users\USER\Desktop\2023\DysarthriaChecker\Model\DATA\TRAINING\ORIGINAL\TS02_LANGUAGE'
+    LABEL_PATH = r'C:\Users\USER\Desktop\2023\DysarthriaChecker\Model\DATA\TRAINING\LABELED\TL02_LANGUAGE'
 
     CLASSES = {
-        25: "25_Language",
-        26: "26_Ear"
+        21: "21_Articulation",
+        24: "24_Vocalization",
+        27: "27_Conduction",
+        28: "28_Sensorineural"
     }
 
     ioHelper = IOHelper()
@@ -71,7 +72,7 @@ if __name__ == '__main__':
     for patient in patients:
         featureFile = './features/' + patient.id + '_MFCC.npy'
 
-        if patient.subType.value == 25 or patient.subType.value == 26:
+        if patient.subType.value == 21 or patient.subType.value == 24 or patient.subType.value == 27 or patient.subType.value == 28:
             if not os.path.exists(featureFile):
                 mfcc = featureHelper.extract_all_features(patient.audioFileRoot, patient.id)
 
@@ -90,12 +91,12 @@ if __name__ == '__main__':
     end = time.time()
     print('All Features of patients extracted successfully! ETA : %.5fs' % (end - start))
 
-    model = FeatureModel().to(device)
+    model = LanguageModel().to(device)
     print(summary(model, (3, 28, 28)))
 
     imgs = []
 
-    for (i, mfcc) in (enumerate(mfccs)):
+    for (i, mfcc) in reversed(list((enumerate(mfccs)))):
         figFile = './spectrogram/' + patients[i].id + '.jpg'
 
         if not os.path.exists(figFile):
@@ -119,10 +120,7 @@ if __name__ == '__main__':
     test_data_set = AudioDataSet(X_test, Y_test)
     test_data_loader = DataLoader(test_data_set, shuffle=False, drop_last=False)
 
-    model = BrainModel()
-    model = model.to(device)
-
-    criterion = nn.BCELoss()
+    criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
 
     EPOCHS = 2000
@@ -135,7 +133,7 @@ if __name__ == '__main__':
         for x, y in train_data_loader:
             x = x.to(device)
             y = y.to(device)
-            y = F.one_hot(y % 3, num_classes=2)
+            y = F.one_hot(y % 3, num_classes=4)
 
             optimizer.zero_grad()
             outputs = model(x.float())
@@ -156,7 +154,7 @@ if __name__ == '__main__':
             for spec, label in test_data_loader:
                 spec = spec.to(device)
                 label = label.to(device)
-                label = F.one_hot(label % 3, num_classes=2)
+                label = F.one_hot(label % 3, num_classes=4)
 
                 targets = model(spec.float())
                 predicted_labels = torch.argmax(targets, dim=1)
@@ -176,4 +174,3 @@ if __name__ == '__main__':
     print(f'Train Finished. last best accuracy : {last_best_acc:.3f}')
 
     convert_model_to_mobile()
-
