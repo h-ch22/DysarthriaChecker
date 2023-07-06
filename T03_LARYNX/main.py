@@ -50,14 +50,14 @@ if __name__ == '__main__':
 
     seed_everything()
 
-    SOURCE_PATH = r'C:\Users\USER\Desktop\2023\DysarthriaChecker\Model\DATA\TRAINING\ORIGINAL\TS02_LANGUAGE'
-    LABEL_PATH = r'C:\Users\USER\Desktop\2023\DysarthriaChecker\Model\DATA\TRAINING\LABELED\TL02_LANGUAGE'
+    SOURCE_PATH = r'C:\Users\USER\Desktop\2023\DysarthriaChecker\Model\DATA\TRAINING\ORIGINAL\TS03_LARYNX'
+    LABEL_PATH = r'C:\Users\USER\Desktop\2023\DysarthriaChecker\Model\DATA\TRAINING\LABELED\TL03_LARYNX'
 
     CLASSES = {
-        21: "21_Articulation",
-        24: "24_Vocalization",
-        27: "27_Conduction",
-        28: "28_Sensorineural"
+        31: "31_Functional",
+        32: "32_Larynx",
+        33: "33_Oral",
+        34: "34_Others"
     }
 
     ioHelper = IOHelper()
@@ -73,7 +73,7 @@ if __name__ == '__main__':
     for patient in patients:
         featureFile = './features/' + patient.id + '_MFCC.npy'
 
-        if patient.subType.value == 21 or patient.subType.value == 24 or patient.subType.value == 27 or patient.subType.value == 28:
+        if patient.subType.value == 31 or patient.subType.value == 32 or patient.subType.value == 33 or patient.subType.value == 34:
             if not os.path.exists(featureFile):
                 mfcc = featureHelper.extract_all_features(patient.audioFileRoot, patient.id)
 

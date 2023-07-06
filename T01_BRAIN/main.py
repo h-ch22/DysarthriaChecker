@@ -125,7 +125,7 @@ if __name__ == '__main__':
     criterion = nn.BCELoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
 
-    EPOCHS = 2000
+    EPOCHS = 8000
     last_best_acc = 0.0
 
     for epoch in range(EPOCHS):

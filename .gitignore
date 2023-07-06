@@ -6,3 +6,7 @@ T02_LANGUAGE/venv
 T02_LANGUAGE/features
 T02_LANGUAGE/outputs
 T02_LANGUAGE/spectrogram
+T03_LARYNX/venv
+T03_LARYNX/features
+T03_LARYNX/outputs
+T03_LARYNX/spectrogram
