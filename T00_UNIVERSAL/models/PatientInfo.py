@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from models import GenderType
-from models import LarynxSubCatType
+from models import BrainSubCatType
 
 
 @dataclass
@@ -17,4 +17,4 @@ class PatientInfo:
     startPos: float
     endPos: float
     playTime: float
-    subType: LarynxSubCatType
+    subType: BrainSubCatType

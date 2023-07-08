@@ -4,9 +4,9 @@ from models.ClassificationModel import ClassificationModel
 from models.FeatureModel import FeatureModel
 
 
-class LanguageModel(nn.Module):
+class LarynxModel(nn.Module):
     def __init__(self):
-        super(LanguageModel, self).__init__()
+        super(LarynxModel, self).__init__()
         self.feature_model = FeatureModel()
         self.classification_model = ClassificationModel()
 
@@ -15,3 +15,4 @@ class LanguageModel(nn.Module):
         outputs = self.classification_model(features)
 
         return outputs
+

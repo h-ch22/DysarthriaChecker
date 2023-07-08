@@ -16,7 +16,7 @@ from helper.FeatureHelper import FeatureHelper
 from helper.IOHelper import IOHelper
 from sklearn.model_selection import train_test_split
 
-from models.LanguageModel import LanguageModel
+from models.LarynxModel import LarynxModel
 from torchsummary import summary
 from skimage.io import imread
 from skimage.transform import resize
@@ -56,7 +56,7 @@ if __name__ == '__main__':
     CLASSES = {
         31: "31_Functional",
         32: "32_Larynx",
-        33: "33_Oral",
+        # 33: "33_Oral"
         34: "34_Others"
     }
 
@@ -73,7 +73,7 @@ if __name__ == '__main__':
     for patient in patients:
         featureFile = './features/' + patient.id + '_MFCC.npy'
 
-        if patient.subType.value == 31 or patient.subType.value == 32 or patient.subType.value == 33 or patient.subType.value == 34:
+        if patient.subType.value == 31 or patient.subType.value == 32 or patient.subType.value == 34:
             if not os.path.exists(featureFile):
                 mfcc = featureHelper.extract_all_features(patient.audioFileRoot, patient.id)
 
@@ -81,9 +81,9 @@ if __name__ == '__main__':
 
                 np.save('./features/' + patient.id + '_MFCC.npy', np.array(mfcc))
 
-            else:
-                mfcc = np.load(featureFile)
-                mfccs.append(mfcc)
+            # else:
+            #     mfcc = np.load(featureFile)
+            #     mfccs.append(mfcc)
 
         index += 1
 
@@ -92,26 +92,31 @@ if __name__ == '__main__':
     end = time.time()
     print('All Features of patients extracted successfully! ETA : %.5fs' % (end - start))
 
-    model = LanguageModel().to(device)
+    model = LarynxModel().to(device)
     print(summary(model, (3, 28, 28)))
 
     imgs = []
 
-    for (i, mfcc) in reversed(list((enumerate(mfccs)))):
+    for (i, patient) in enumerate(patients):
         figFile = './spectrogram/' + patients[i].id + '.jpg'
-
-        if not os.path.exists(figFile):
-            librosa.display.specshow(mfcc, sr=16000, hop_length=160)
-            plt.tight_layout()
-
-            plt.savefig(figFile)
-            print("Spectrogram for %s saved (%d/%d)" % (patients[i].id, i+1, len(mfccs)))
-            plt.close()
-            del figFile
-            gc.collect()
-
         img = imread(figFile)
         imgs.append(resize(img, (3, 28, 28)))
+
+    # for (i, mfcc) in reversed(list((enumerate(mfccs)))):
+    #     figFile = './spectrogram/' + patients[i].id + '.jpg'
+    #
+    #     if not os.path.exists(figFile):
+    #         librosa.display.specshow(mfcc, sr=16000, hop_length=160)
+    #         plt.tight_layout()
+    #
+    #         plt.savefig(figFile)
+    #         print("Spectrogram for %s saved (%d/%d)" % (patients[i].id, i+1, len(mfccs)))
+    #         plt.close()
+    #         del figFile
+    #         gc.collect()
+    #
+    #     img = imread(figFile)
+    #     imgs.append(resize(img, (3, 28, 28)))
 
     print("All Spectrogram of patients extracted successfully!")
 
@@ -127,7 +132,7 @@ if __name__ == '__main__':
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
 
-    EPOCHS = 2000
+    EPOCHS = 4000
     last_best_acc = 0.0
 
     for epoch in range(EPOCHS):
@@ -137,7 +142,7 @@ if __name__ == '__main__':
         for x, y in train_data_loader:
             x = x.to(device)
             y = y.to(device)
-            y = F.one_hot(y % 3, num_classes=4)
+            y = F.one_hot(y % 3, num_classes=3)
 
             optimizer.zero_grad()
             outputs = model(x.float())
@@ -158,7 +163,7 @@ if __name__ == '__main__':
             for spec, label in test_data_loader:
                 spec = spec.to(device)
                 label = label.to(device)
-                label = F.one_hot(label % 3, num_classes=4)
+                label = F.one_hot(label % 3, num_classes=3)
 
                 targets = model(spec.float())
                 predicted_labels = torch.argmax(targets, dim=1)

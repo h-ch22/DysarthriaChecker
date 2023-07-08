@@ -4,7 +4,7 @@ import os
 
 from models.PatientInfo import PatientInfo
 from models.GenderType import GenderType
-from models.LanguageSubCatType import LanguageSubCatType
+from models.LarynxSubCatType import LarynxSubCatType
 
 
 class IOHelper:
@@ -47,7 +47,7 @@ class IOHelper:
                                 recordingEnvironment=recordingEnvironment, recordingDevice=recordingDevice,
                                 havingNoise=havingNoise, startPos=float(startPos), endPos=float(endPos),
                                 playTime=float(playTime),
-                                subType=LanguageSubCatType(int(subCategory))
+                                subType=LarynxSubCatType(int(subCategory))
                             )
                         )
 

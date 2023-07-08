@@ -69,8 +69,8 @@ if __name__ == '__main__':
     index = 0
 
     for patient in patients:
-        featureFile = './features/' + patient.id + '_MFCC.npy'
-
+        # featureFile = './features/' + patient.id + '_MFCC.npy'
+        featureFile = 'D:/DysarthriaChecker_Original/DATA/Features/mel_spectrogram/T01_BRAIN/' + patient.id + '_MFCC.npy'
         if patient.subType.value == 25 or patient.subType.value == 26:
             if not os.path.exists(featureFile):
                 mfcc = featureHelper.extract_all_features(patient.audioFileRoot, patient.id)
@@ -96,7 +96,8 @@ if __name__ == '__main__':
     imgs = []
 
     for (i, mfcc) in (enumerate(mfccs)):
-        figFile = './spectrogram/' + patients[i].id + '.jpg'
+        # figFile = './spectrogram/' + patients[i].id + '.jpg'
+        figFile = 'D:/DysarthriaChecker_Original/DATA/Features/spectrogram/T01_BRAIN/' + patients[i].id + '.jpg'
 
         if not os.path.exists(figFile):
             librosa.display.specshow(mfcc, sr=16000, hop_length=160)
@@ -125,7 +126,7 @@ if __name__ == '__main__':
     criterion = nn.BCELoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
 
-    EPOCHS = 8000
+    EPOCHS = 4000
     last_best_acc = 0.0
 
     for epoch in range(EPOCHS):
