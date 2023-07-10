@@ -31,7 +31,7 @@ def convert_model_to_mobile():
     example = example.to(device)
     traced_script_module = torch.jit.trace(model, example)
     optimized_traced_model = optimize_for_mobile(traced_script_module)
-    optimized_traced_model.save('./outputs/T02_mobile.pt')
+    optimized_traced_model.save('./outputs/T03_mobile.pt')
 
     print('optimize for mobile and model save completed.')
 
@@ -51,13 +51,13 @@ if __name__ == '__main__':
     seed_everything()
 
     SOURCE_PATH = r'C:\Users\USER\Desktop\2023\DysarthriaChecker\Model\DATA\TRAINING\ORIGINAL\TS03_LARYNX'
-    LABEL_PATH = r'C:\Users\USER\Desktop\2023\DysarthriaChecker\Model\DATA\TRAINING\LABELED\TL03_LARYNX'
+    # LABEL_PATH = r'C:\Users\USER\Desktop\2023\DysarthriaChecker\Model\DATA\TRAINING\LABELED\TL03_LARYNX'
+    LABEL_PATH = r'D:\DysarthriaChecker_Original\DATA\TL03'
 
     CLASSES = {
         31: "31_Functional",
         32: "32_Larynx",
-        # 33: "33_Oral"
-        34: "34_Others"
+        33: "33_Oral"
     }
 
     ioHelper = IOHelper()
@@ -69,39 +69,42 @@ if __name__ == '__main__':
     mfccs = []
     labels = []
     index = 0
+    imgs = []
 
     for patient in patients:
-        featureFile = './features/' + patient.id + '_MFCC.npy'
+        # featureFile = './features/' + patient.id + '_MFCC.npy'
 
-        if patient.subType.value == 31 or patient.subType.value == 32 or patient.subType.value == 34:
-            if not os.path.exists(featureFile):
-                mfcc = featureHelper.extract_all_features(patient.audioFileRoot, patient.id)
+        if patient.subType.value == 31 or patient.subType.value == 32 or patient.subType.value == 33:
+            figFile = 'D:/DysarthriaChecker_Original/DATA/Features/spectrogram/T03_LARYNX/' + patient.id + '.jpg'
+            img = imread(figFile)
+            imgs.append(resize(img, (3, 28, 28)))
 
-                print("Features extracted for %s, disease Code : %d (%d/%d)" % (patient.id, patient.subType.value, index, len(patients)))
-
-                np.save('./features/' + patient.id + '_MFCC.npy', np.array(mfcc))
-
+            # if not os.path.exists(featureFile):
+            #     mfcc = featureHelper.extract_all_features(patient.audioFileRoot, patient.id)
+            #
+            #     print("Features extracted for %s, disease Code : %d (%d/%d)" % (patient.id, patient.subType.value, index, len(patients)))
+            #
+            #     np.save('./features/' + patient.id + '_MFCC.npy', np.array(mfcc))
+            #
             # else:
             #     mfcc = np.load(featureFile)
             #     mfccs.append(mfcc)
 
-        index += 1
+            labels.append(patient.subType.value)
 
-        labels.append(patient.subType.value)
+        # index += 1
+
 
     end = time.time()
     print('All Features of patients extracted successfully! ETA : %.5fs' % (end - start))
 
-    model = LarynxModel().to(device)
-    print(summary(model, (3, 28, 28)))
-
-    imgs = []
-
-    for (i, patient) in enumerate(patients):
-        figFile = './spectrogram/' + patients[i].id + '.jpg'
-        img = imread(figFile)
-        imgs.append(resize(img, (3, 28, 28)))
-
+    # imgs = []
+    #
+    # for (i, patient) in enumerate(patients):
+    #     figFile = './spectrogram/' + patients[i].id + '.jpg'
+    #     img = imread(figFile)
+    #     imgs.append(resize(img, (3, 28, 28)))
+    #
     # for (i, mfcc) in reversed(list((enumerate(mfccs)))):
     #     figFile = './spectrogram/' + patients[i].id + '.jpg'
     #
@@ -118,7 +121,7 @@ if __name__ == '__main__':
     #     img = imread(figFile)
     #     imgs.append(resize(img, (3, 28, 28)))
 
-    print("All Spectrogram of patients extracted successfully!")
+    print("All Spectrogram of patients extracted successfully! imgs.size : %d, labels.size : %d" % (len(imgs), len(labels)))
 
     imgs = np.array(imgs)
 
@@ -128,6 +131,9 @@ if __name__ == '__main__':
 
     test_data_set = AudioDataSet(X_test, Y_test)
     test_data_loader = DataLoader(test_data_set, shuffle=False, drop_last=False)
+
+    model = LarynxModel()
+    model = model.to(device)
 
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001)

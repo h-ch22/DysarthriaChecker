@@ -10,7 +10,7 @@
 <br>
 
 > #### Model Accuracy
->   > Universal (T00) : Training <br>
+>   > Universal (T00) : 0.9 (90.0%) <br>
 >   > Brain (T01) : 0.976 (97.6%) <br>
 >   > Language (T02) : 0.988 (98.8%) <br>
 >   > Larynx (T03) : Training <br>

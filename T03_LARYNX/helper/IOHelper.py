@@ -38,21 +38,33 @@ class IOHelper:
                     startPos = data['Meta_info']['StartPos']
                     playTime = data['Meta_info']['PlayTime']
 
-                    if os.path.exists(audioFile):
-                        patients.append(
-                            PatientInfo(
-                                id=ID, samplingRate=int(samplingRate),
-                                sex=GenderType.MALE if sex == 'M' else GenderType.FEMALE,
-                                age=int(age), audioFileRoot=audioFile, transcript=script,
-                                recordingEnvironment=recordingEnvironment, recordingDevice=recordingDevice,
-                                havingNoise=havingNoise, startPos=float(startPos), endPos=float(endPos),
-                                playTime=float(playTime),
-                                subType=LarynxSubCatType(int(subCategory))
-                            )
+                    patients.append(
+                        PatientInfo(
+                            id=ID, samplingRate=int(samplingRate),
+                            sex=GenderType.MALE if sex == 'M' else GenderType.FEMALE,
+                            age=int(age), audioFileRoot=audioFile, transcript=script,
+                            recordingEnvironment=recordingEnvironment, recordingDevice=recordingDevice,
+                            havingNoise=havingNoise, startPos=float(startPos), endPos=float(endPos),
+                            playTime=float(playTime),
+                            subType=LarynxSubCatType(int(subCategory))
                         )
+                    )
 
-                    else:
-                        raise Exception("FILE NOT FOUND EXCEPTION\nFILE : %s" % audioFile)
+                    # if os.path.exists(audioFile):
+                    #     patients.append(
+                    #         PatientInfo(
+                    #             id=ID, samplingRate=int(samplingRate),
+                    #             sex=GenderType.MALE if sex == 'M' else GenderType.FEMALE,
+                    #             age=int(age), audioFileRoot=audioFile, transcript=script,
+                    #             recordingEnvironment=recordingEnvironment, recordingDevice=recordingDevice,
+                    #             havingNoise=havingNoise, startPos=float(startPos), endPos=float(endPos),
+                    #             playTime=float(playTime),
+                    #             subType=LarynxSubCatType(int(subCategory))
+                    #         )
+                    #     )
+                    #
+                    # else:
+                    #     raise Exception("FILE NOT FOUND EXCEPTION\nFILE : %s" % audioFile)
 
             return patients
 
