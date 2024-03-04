@@ -5,7 +5,6 @@ import torch.nn as nn
 class ClassificationModel(nn.Module):
     def __init__(self):
         super(ClassificationModel, self).__init__()
-
         self.flatten = nn.Flatten()
         self.dense_1 = nn.Linear(512, 128)
         self.dense_2 = nn.Linear(128, 512)

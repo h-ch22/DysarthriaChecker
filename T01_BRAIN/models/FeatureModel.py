@@ -42,3 +42,4 @@ class FeatureModel(nn.Module):
         x = self.flatten(x)
 
         return x
+

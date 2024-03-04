@@ -47,7 +47,7 @@ class IOHelper:
                                 recordingEnvironment=recordingEnvironment, recordingDevice=recordingDevice,
                                 havingNoise=havingNoise, startPos=float(startPos), endPos=float(endPos),
                                 playTime=float(playTime),
-                                subType=BrainSubCatType(int(subCategory))
+                                subType=BrainSubCatType(int(CLASS))
                             )
                         )
 

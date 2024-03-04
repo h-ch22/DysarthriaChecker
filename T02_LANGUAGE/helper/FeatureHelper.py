@@ -2,17 +2,8 @@ import time
 import warnings
 
 import librosa
-import pitch
-import parselmouth
-
-import scipy
-import scipy.fftpack as fftpk
 import numpy as np
 import scipy.io.wavfile as wavfile
-import sklearn
-
-from pyrpde import rpde
-from parselmouth.praat import call
 import matplotlib.pyplot as plt
 
 warnings.filterwarnings("ignore")

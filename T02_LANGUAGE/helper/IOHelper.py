@@ -24,7 +24,7 @@ class IOHelper:
 
                     diseaseType = data['Disease_info']['Type']
                     samplingRate = data['Meta_info']['SamplingRate']
-                    ID = data['File_id'].replace('중복1', '').replace('중복2', '')
+                    ID = data['File_id']
                     sex = data['Patient_info']['Sex']
                     age = data['Patient_info']['Age']
                     subCategory = data['Disease_info']['Subcategory' + str(int(diseaseType))]

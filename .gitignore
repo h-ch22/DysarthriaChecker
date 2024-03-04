@@ -11,3 +11,9 @@ T03_LARYNX/features
 T03_LARYNX/outputs
 T03_LARYNX/spectrogram
 venv/
+log.txt
+log_validation.txt
+confusion_matrix_*.png
+*.pt
+*.ptl
+*.pth
