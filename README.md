@@ -1,5 +1,9 @@
+<img src="README/DysarthriaChecker_mockup.png"><br>
+<img width="200px;" src="README/ic_DysarthriaChecker.png"><br>
+
 # Dysarthria Checker
-### Diagnose your dysarthria with ML and Korean vocalization for Korean<br><br>
+### Diagnose your dysarthria with ML and Korean vocalization for Korean<br>
+##### [Changjin Ha, Taesik Go. "Development of a Mobile Application for Disease Prediction Using Speech Data of Korean Patients with Dysarthria" Journal of Biomedical Engineering Research 45.1 (2024): 1-9](https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART003057725)<br><br>
 
 > #### Introduction
 |Classes|Detection|
